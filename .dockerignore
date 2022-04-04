@@ -1,0 +1,15 @@
+# can't ignore .git unfortunately because gemspec file uses git command to list files
+# Git
+.git
+.github
+.gitignore
+
+# Logs
+log/*
+# Temp files
+tmp/*
+# Editor temp files
+*.swp
+*.swo
+
+test/solr

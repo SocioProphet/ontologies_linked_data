@@ -82,7 +82,7 @@ module LinkedData
     def _run_suite(suite, type)
       suite.before_suite if suite.respond_to?(:before_suite)
       super(suite, type)
-    rescue Exception => e
+    rescue StandardError => e
       puts e.message
       puts e.backtrace.join("\n\t")
       puts "Traced from:"

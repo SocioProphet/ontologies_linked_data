@@ -1,4 +1,5 @@
 require 'rake/testtask'
+require "standard/rake"
 
 Rake::TestTask.new do |t|
   t.libs = []
