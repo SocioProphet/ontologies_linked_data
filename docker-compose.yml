@@ -31,6 +31,7 @@ services:
     command: "rake test TESTOPTS='-v'"
     volumes:
       - bundle:/srv/ontoportal/bundle
+      - .:/srv/ontoportal/ontologies_linked_data
     depends_on:
       - solr-ut
       - redis-ut
