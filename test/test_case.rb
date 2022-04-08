@@ -153,8 +153,8 @@ module LinkedData
       LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
     end
 
-    def delete_goo_models(gooModelArray)
-      gooModelArray.each do |m|
+    def delete_goo_models(goo_model_array)
+      goo_model_array.each do |m|
         m.delete
         assert_equal(false, m.exist?(reload = true), "Failed to delete a goo model.")
       end
