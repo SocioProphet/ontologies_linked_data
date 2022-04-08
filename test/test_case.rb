@@ -12,8 +12,8 @@ end
 require_relative "test_log_file"
 require_relative "../lib/ontologies_linked_data"
 
-if ENV['OVERRIDE_CONNECT_GOO'] == "true"
-  SOLR_HOST = ENV.include?("SOLR_HOST") ? ENV["SOLR_HOST"] : "localhost"
+if ENV['OVERRIDE_CONNECT_GOO']  == "true"
+    SOLR_HOST = ENV.include?("SOLR_HOST") ? ENV["SOLR_HOST"] : "localhost"    
   LinkedData.config do |config|
     config.goo_backend_name = ENV["GOO_BACKEND_NAME"]
     config.goo_port = ENV["GOO_PORT"].to_i
