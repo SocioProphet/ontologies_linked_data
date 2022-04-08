@@ -1,6 +1,6 @@
 # Start simplecov if this is a coverage task
-if ENV["COVERAGE"].eql?("true")
-  require "simplecov"
+if ENV["COVERAGE"].eql?("true")   
+     require "simplecov"
   SimpleCov.start do
     add_filter "/test/"
     add_filter "app.rb"
