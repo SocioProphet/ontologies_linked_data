@@ -1,6 +1,6 @@
 # Start simplecov if this is a coverage task
-if ENV['COVERAGE'].eql?('true')
-  require 'simplecov'
+if ENV["COVERAGE"].eql?("true")   
+     require "simplecov"
   SimpleCov.start do
     add_filter '/test/'
     add_filter 'app.rb'
@@ -12,39 +12,39 @@ end
 require_relative 'test_log_file'
 require_relative '../lib/ontologies_linked_data'
 
-if ENV['OVERRIDE_CONNECT_GOO'] == 'true'
-  SOLR_HOST = ENV.include?('SOLR_HOST') ? ENV['SOLR_HOST'] : 'localhost'
+if ENV['OVERRIDE_CONNECT_GOO']  == "true"
+    SOLR_HOST = ENV.include?("SOLR_HOST") ? ENV["SOLR_HOST"] : "localhost"    
   LinkedData.config do |config|
-    config.goo_backend_name           = ENV['GOO_BACKEND_NAME']
-    config.goo_port                   = ENV['GOO_PORT'].to_i
-    config.goo_host                   = ENV['GOO_HOST']
-    config.goo_path_query             = ENV['GOO_PATH_QUERY']
-    config.goo_path_data              = ENV['GOO_PATH_DATA']
-    config.goo_path_update            = ENV['GOO_PATH_UPDATE']
-    config.goo_redis_port             = ENV['REDIS_PORT']
-    config.goo_redis_host             = ENV['REDIS_HOST']
-    config.http_redis_port            = ENV['REDIS_PORT']
-    config.http_redis_host            = ENV['REDIS_HOST']
-    config.search_server_url          = "http://#{SOLR_HOST}:8983/solr/term_search_core1"
+    config.goo_backend_name = ENV["GOO_BACKEND_NAME"]
+    config.goo_port = ENV["GOO_PORT"].to_i
+    config.goo_host = ENV["GOO_HOST"]
+    config.goo_path_query = ENV["GOO_PATH_QUERY"]
+    config.goo_path_data = ENV["GOO_PATH_DATA"]
+    config.goo_path_update = ENV["GOO_PATH_UPDATE"]
+    config.goo_redis_port = ENV["REDIS_PORT"]
+    config.goo_redis_host = ENV["REDIS_HOST"]
+    config.http_redis_port = ENV["REDIS_PORT"]
+    config.http_redis_host = ENV["REDIS_HOST"]
+    config.search_server_url = "http://#{SOLR_HOST}:8983/solr/term_search_core1"
     config.property_search_server_url = "http://#{SOLR_HOST}:8983/solr/prop_search_core1"
   end
 end
 
-require_relative '../config/config'
-require 'minitest/unit'
+require_relative "../config/config"
+require "minitest/unit"
 MiniTest::Unit.autorun
 
 # Check to make sure you want to run if not pointed at localhost
 safe_hosts = Regexp.new(/localhost|-ut|ncbo-dev*|ncbo-unittest*/)
 def safe_redis_hosts?(sh)
-  return [LinkedData.settings.http_redis_host,
-   LinkedData.settings.goo_redis_host].select { |x|
+  [LinkedData.settings.http_redis_host,
+    LinkedData.settings.goo_redis_host].select { |x|
     x.match(sh)
   }.length == 2
 end
 unless LinkedData.settings.goo_host.match(safe_hosts) &&
-       LinkedData.settings.search_server_url.match(safe_hosts) &&
-       safe_redis_hosts?(safe_hosts)
+    LinkedData.settings.search_server_url.match(safe_hosts) &&
+    safe_redis_hosts?(safe_hosts)
   print '\n\n================================== WARNING ==================================\n'
   print '** TESTS CAN BE DESTRUCTIVE -- YOU ARE POINTING TO A POTENTIAL PRODUCTION/STAGE SERVER **\n'
   print 'Servers:\n'
@@ -55,8 +55,8 @@ unless LinkedData.settings.goo_host.match(safe_hosts) &&
   print "Type 'y' to continue: "
   $stdout.flush
   confirm = $stdin.gets
-  abort('Canceling tests...\n\n') unless confirm.strip == 'y'
-  print 'Running tests...'
+  abort('Canceling tests...\n\n') unless confirm.strip == "y"
+  print "Running tests..."
   $stdout.flush
 end
 
@@ -82,10 +82,10 @@ module LinkedData
     def _run_suite(suite, type)
       suite.before_suite if suite.respond_to?(:before_suite)
       super(suite, type)
-    rescue Exception => e
+    rescue StandardError => e
       puts e.message
       puts e.backtrace.join("\n\t")
-      puts 'Traced from:'
+      puts "Traced from:"
       raise e
     ensure
       suite.after_suite if suite.respond_to?(:after_suite)
@@ -95,7 +95,6 @@ module LinkedData
   MiniTest::Unit.runner = LinkedData::Unit.new
 
   class TestCase < MiniTest::Unit::TestCase
-
     # Ensure all threads exit on any exception
     Thread.abort_on_exception = true
 
@@ -110,8 +109,8 @@ module LinkedData
 
       if user.nil?
         user = LinkedData::Models::User.new({username: user_name})
-        user.email = 'a@example.org'
-        user.passwordHash = 'XXXXX'
+        user.email = "a@example.org"
+        user.passwordHash = "XXXXX"
         user.save
       end
 
@@ -125,10 +124,10 @@ module LinkedData
         ont.save
       end
       contact = LinkedData::Models::Contact.new
-      contact.email = 'xxx@example.org'
-      contact.name  = 'some name'
+      contact.email = "xxx@example.org"
+      contact.name = "some name"
       contact.save
-      return owl, ont, user, contact
+      [owl, ont, user, contact]
     end
 
     ##
@@ -154,10 +153,10 @@ module LinkedData
       LinkedData::SampleData::Ontology.delete_ontologies_and_submissions
     end
 
-    def delete_goo_models(gooModelArray)
-      gooModelArray.each do |m|
+    def delete_goo_models(goo_model_array)
+      goo_model_array.each do |m|
         m.delete
-        assert_equal(false, m.exist?(reload=true), 'Failed to delete a goo model.')
+        assert_equal(false, m.exist?(reload = true), "Failed to delete a goo model.")
       end
     end
 
@@ -174,7 +173,7 @@ module LinkedData
       assert_equal(false, m.errors[:creator].nil?) # We expect there to be errors on creator
       assert_instance_of(LinkedData::Models::User, user, "#{user} is not an instance of LinkedData::Models::User")
       assert_equal(true, user.valid?, "#{user} is not a valid instance of LinkedData::Models::User")
-      m.instance_of?(LinkedData::Models::Project) ? m.creator = [user] : m.creator = user
+      m.creator = (m.instance_of?(LinkedData::Models::Project) ? [user] : user)
       assert_equal(false, m.valid?, "#{m} .valid? returned true, it was expected to be invalid.")
       assert_equal(true, m.errors[:creator].nil?, "Invalid model: #{m.errors}")
     end
@@ -183,20 +182,20 @@ module LinkedData
     # @note This method name cannot begin with 'test_' or it will be called as a test
     # @param [LinkedData::Models::Base] m a valid model instance with a 'created' attribute (without a value).
     def model_created_test(m)
-      assert_equal(true, m.is_a?(LinkedData::Models::Base), 'Expected is_a?(LinkedData::Models::Base).')
+      assert_equal(true, m.is_a?(LinkedData::Models::Base), "Expected is_a?(LinkedData::Models::Base).")
       assert_equal(true, m.valid?, "Expected valid model: #{m.errors}")
       m.save if m.valid?
       # The default value is auto-generated (during save), it should be OK.
       assert_instance_of(DateTime, m.created, "The 'created' attribute is not a DateTime instance.")
       assert_equal(true, m.errors[:created].nil?, m.errors.to_s)
 
-      begin
-        m.created = 'this string shuld fail'
-      rescue Exception => e
-        # in ruby 2.3+, this generates a runtime exception, so we need to handle it
-        assert_equal ArgumentError, e.class
-        assert_equal 'invalid date', e.message
+      #     if RUBY_VERSION.to_f < 2.7
+      e = if RUBY_VERSION.to_f < 2.7
+        assert_raises(ArgumentError) { m.created = "this string should fail" }
+      else
+        assert_raises(Date::Error) { m.created = "this string should fail" }
       end
+      assert_equal "invalid date", e.message
 
       # The value should be an XSD date time.
       m.created = DateTime.now
@@ -208,13 +207,13 @@ module LinkedData
     # Test the save and delete methods on a GOO model
     # @param [LinkedData::Models::Base] m a valid model instance that can be saved and deleted
     def model_lifecycle_test(m)
-      assert_equal(true, m.is_a?(LinkedData::Models::Base), 'Expected is_a?(LinkedData::Models::Base).')
+      assert_equal(true, m.is_a?(LinkedData::Models::Base), "Expected is_a?(LinkedData::Models::Base).")
       assert_equal(true, m.valid?, "Expected valid model: #{m.errors}")
-      assert_equal(false, m.exist?(reload=true), 'Given model is already saved, expected one that is not.')
+      assert_equal(false, m.exist?(reload = true), "Given model is already saved, expected one that is not.")
       m.save
-      assert_equal(true, m.exist?(reload=true), 'Failed to save model.')
+      assert_equal(true, m.exist?(reload = true), "Failed to save model.")
       m.delete
-      assert_equal(false, m.exist?(reload=true), 'Failed to delete model.')
+      assert_equal(false, m.exist?(reload = true), "Failed to delete model.")
     end
 
     def self.count_pattern(pattern)
@@ -223,14 +222,14 @@ module LinkedData
       rs.each_solution do |sol|
         return sol[:c].object
       end
-      return 0
+      0
     end
 
     def self.backend_4s_delete
-      raise StandardError, 'Too many triples in KB, does not seem right to run tests' unless
-            count_pattern('?s ?p ?o') < 400000
+      raise StandardError, "Too many triples in KB, does not seem right to run tests" unless
+            count_pattern("?s ?p ?o") < 400000
 
-      Goo.sparql_update_client.update('DELETE {?s ?p ?o } WHERE { ?s ?p ?o }')
+      Goo.sparql_update_client.update("DELETE {?s ?p ?o } WHERE { ?s ?p ?o }")
       LinkedData::Models::SubmissionStatus.init_enum
       LinkedData::Models::OntologyType.init_enum
       LinkedData::Models::OntologyFormat.init_enum

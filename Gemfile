@@ -18,8 +18,9 @@ gem 'rake', '~> 10.0'
 gem 'rest-client'
 gem 'rsolr', '~> 1.0'
 gem 'rubyzip', '~> 1.0'
+gem "standard", group: [:development, :test]
 gem 'thin'
-
+gem 'simplecov', require: false, group: :test
 # Testing
 group :test do
   gem 'email_spec'

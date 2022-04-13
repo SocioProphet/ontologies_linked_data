@@ -1,4 +1,5 @@
 require 'rake/testtask'
+require "standard/rake"
 
 task default: %w[test]
 

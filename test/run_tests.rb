@@ -116,11 +116,11 @@ end
 def ag_rest_call(path, method)
   data = {}
   request = RestClient::Request.new(
-      :method => method,
-      :url => "http://#{GOO_HOST}:#{@options[:backend_port]}#{path}",
-      :user => AG_USERNAME,
-      :password => AG_PASSWORD,
-      :headers => { :accept => :json, :content_type => :json }
+    method: method,
+    url: "http://#{GOO_HOST}:#{@options[:backend_port]}#{path}",
+    user: AG_USERNAME,
+    password: AG_PASSWORD,
+    headers: { :accept => :json, :content_type => :json }
   ).execute
   data = JSON.parse(response.to_str) if ['get', 'post'].include?(method.downcase)
   data
@@ -129,12 +129,12 @@ end
 def parse_options
   backends = [BACKEND_4STORE.downcase, BACKEND_AG.downcase]
   options = {
-      backend: BACKEND_4STORE,
-      version: DEF_VERSION,
-      filename: '',
-      test: '',
-      backend_port: -1,
-      redis_port: 6379
+    backend: BACKEND_4STORE,
+    version: DEF_VERSION,
+    filename: '',
+    test: '',
+    backend_port: -1,
+    redis_port: 6379
   }
   opt_parser = OptionParser.new do |opts|
     opts.banner = "\n\s\s\s\s\sUsage: bundle exec ruby #{File.basename(__FILE__)} [options]\n\n"
